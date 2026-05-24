@@ -285,6 +285,33 @@ a:hover{color:var(--cyan-dim)}
 ::-webkit-scrollbar-thumb:hover{background:rgba(0,229,255,.5)}
 ::selection{background:var(--cyan);color:var(--bg-base)}
 
+/* PRINT / SAVE AS PDF */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body::before{display:none}
+  .navbar,.hero-scroll-hint,.hero-cta,.hero-author,#particleCanvas,.fig-overlay,.modal-overlay,.hero-badge,
+  .contact-links,.site-footer,.nav-toggle{display:none!important}
+  body{background:#050c1a!important;color:#e8f0fe!important}
+  .hero{min-height:auto;padding:3rem 2rem 2rem;page-break-after:always}
+  .hero-content{animation:none}
+  .hero-stats{margin-bottom:0}
+  .section,.section-dark{padding:2rem 0;page-break-inside:avoid}
+  .section-dark::before,.section-dark::after{display:none}
+  .container{max-width:100%;padding:0 1.5rem}
+  .reveal{opacity:1!important;transform:none!important}
+  .workflow-steps::before{display:none}
+  .workflow-step{page-break-inside:avoid;grid-template-columns:60px 1fr}
+  .workflow-step::before{display:none}
+  .results-block,.bio-insights-block,.abstract-block,.info-card,.tool-card,.hl-stat-card,.wf-overview-card,.ml-model-card{page-break-inside:avoid}
+  .figures-grid{grid-template-columns:repeat(3,1fr)}
+  .fig-img-wrapper{aspect-ratio:4/3}
+  a[href^="http"]:after{content:" (" attr(href) ")";font-size:.7rem;color:#4a6380}
+  .hero-title{font-size:2.8rem}
+  h2{font-size:1.8rem}
+  .contact-card{page-break-inside:avoid}
+  #figures{display:none}
+}
+
 /* RESPONSIVE */
 @media(max-width:900px){
   .about-grid,.abstract-layout,.enrichment-cols{grid-template-columns:1fr}
@@ -330,7 +357,7 @@ a:hover{color:var(--cyan-dim)}
     <li><a href="#figures">Figures</a></li>
     <li><a href="#tools">Tools</a></li>
     <li><a href="#references">References</a></li>
-    <li><a href="assets/pdf/Lung_Adenocarcinoma_Rakesh.pdf" class="nav-btn" target="_blank" download>↓ PDF</a></li>
+    <li><a href="#" class="nav-btn" onclick="printPage(event)">↓ PDF</a></li>
   </ul>
 </nav>
 
@@ -353,7 +380,7 @@ a:hover{color:var(--cyan-dim)}
     </div>
     <div class="hero-cta">
       <a href="#about" class="btn-primary">Explore Research</a>
-      <a href="assets/pdf/Lung_Adenocarcinoma_Rakesh.pdf" class="btn-outline" target="_blank" download>Download Full Report</a>
+      <a href="#" class="btn-outline" onclick="printPage(event)">↓ Download as PDF</a>
     </div>
     <div class="hero-author">
       <div class="author-avatar">RK</div>
@@ -833,7 +860,7 @@ a:hover{color:var(--cyan-dim)}
         <p class="contact-loc mono">📍 Bangalore — 560092, Karnataka, India</p>
         <p class="contact-desc">Bioinformatics researcher with expertise in transcriptomic data integration, differential expression analysis, gene co-expression networks, immune cell deconvolution, and supervised machine learning applied to cancer biology. This project was completed in January 2026 as an independent research study on lung adenocarcinoma using publicly available GEO datasets.</p>
         <div class="contact-links">
-          <a href="assets/pdf/Lung_Adenocarcinoma_Rakesh.pdf" class="btn-primary" download>↓ Download Full Report</a>
+          <a href="#" class="btn-primary" onclick="printPage(event)">↓ Download as PDF</a>
           <a href="https://github.com" class="btn-outline" target="_blank">GitHub →</a>
         </div>
       </div>
@@ -951,7 +978,18 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click"
   setTimeout(tick,2000);
 })();
 
-/* COUNTER */
+/* PRINT TO PDF */
+function printPage(e){
+  e&&e.preventDefault();
+  const tip=document.createElement("div");
+  tip.id="print-tip";
+  tip.style.cssText="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#00e5ff;color:#050c1a;padding:.75rem 1.5rem;border-radius:8px;font-size:.85rem;font-weight:600;font-family:'JetBrains Mono',monospace;box-shadow:0 4px 24px rgba(0,229,255,.4);pointer-events:none";
+  tip.textContent="In the print dialog → choose 'Save as PDF' as the destination";
+  document.body.appendChild(tip);
+  setTimeout(()=>{window.print();tip.remove();},400);
+}
+
+
 (function(){
   document.querySelectorAll(".stat-val[data-target]").forEach(el=>{
     const target=parseInt(el.dataset.target);
